@@ -21,7 +21,6 @@ public class Gameplay : MonoBehaviour
         LoadData();
         GetNewQuestion();
     }
-
     private void FixedUpdate()
     {
         if (roundStarted)
@@ -43,6 +42,7 @@ public class Gameplay : MonoBehaviour
         {
             return;
         }
+        gameplayUI.SetQuestionText(currentQuestionIndex + 1);
         gameplayUI.ToggleVisualRestartButton(false);
         gameplayUI.ToggleVisualNextQuestionButton(false);
         QuestionData newQuestionData = questions.questions[currentQuestionIndex];
@@ -100,8 +100,8 @@ public class Gameplay : MonoBehaviour
         {
             roundState = RoundState.Pass;
         }
+        else if (trueIndex == index)
         //true answer
-        if (trueIndex == index)
         {
             roundState = RoundState.Correct;
             UpdateScore(10);

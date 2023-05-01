@@ -5,12 +5,14 @@ using UnityEngine;
 
 public class Leaderboard : MonoBehaviour
 {
-    public string[] links;
-    [SerializeField]public Dictionary<int,Page> pages = new Dictionary<int,Page>();
-    public int currentPageIndex;
+    public const string apiTarget = "https://magegamessite.web.app/case1/leaderboard_page_";
+    public const string apiExtention = ".json";
+
+    private Dictionary<int, Page> pages = new Dictionary<int, Page>();
+    [SerializeField] private int currentPageIndex;
     public EventHandler<bool> leaderboardDataLoadingEvent;
 
-    public void TryRequest(string url,Action onLoad)
+    public void TryRequest(string url, Action onLoad)
     {
         StartCoroutine(APILeaderboard.GetRequest(url, page =>
         {
@@ -28,7 +30,7 @@ public class Leaderboard : MonoBehaviour
 
     public void GetPage(Action callback)
     {
-        TryRequest(links[currentPageIndex], callback);
+        TryRequest(apiTarget + currentPageIndex.ToString() + apiExtention, callback);
     }
     public Page GetCurrentPage()
     {
@@ -45,9 +47,18 @@ public class Leaderboard : MonoBehaviour
         if (!pages[pages.Count - 1].is_last)
         {
             leaderboardDataLoadingEvent.Invoke(this, true);
-            TryRequest(links[targetPage], null);
+            TryRequest(apiTarget + targetPage.ToString() + apiExtention, null);
             return null;
         }
         return null;
+    }
+    public int GetLoadedLeaderboardLenght()
+    {
+        int lenght = 0;
+        for (int i = 0; i < pages.Count; i++)
+        {
+            lenght += pages[i].data.Length;
+        }
+        return lenght;
     }
 }

@@ -5,13 +5,13 @@ using TMPro;
 using UnityEngine;
 public class GameplayUI : MonoBehaviour
 {
-    [Header("Question UI")]
-    [SerializeField] private QuestionUI questionUI;
-    [Space(10), Header("Time UI")]
-    [SerializeField] private TextMeshProUGUI timeText;
-    [Space(10), Header("Score")]
+    [Header("Header")]
     [SerializeField] private TextMeshProUGUI scoreText;
-    [Space(10), Header("Round Result")]
+    [SerializeField] private TextMeshProUGUI timeText;
+    [SerializeField] private TextMeshProUGUI questionText;
+    [Space(10),Header("Body")]
+    [SerializeField] private QuestionUI questionUI;
+    [Space(10), Header("Footer")]
     public GameObject nextQuestionButton;
     public GameObject restartButton;
 
@@ -31,6 +31,10 @@ public class GameplayUI : MonoBehaviour
     public void SetTimerText(float spendedTime)
     {
         timeText.text = spendedTime.ToString("F0");
+    }    
+    public void SetQuestionText(int currentQuestion)
+    {
+        questionText.text = "Question\n"+currentQuestion.ToString();
     }
     public void UpdateScore(float score)
     {
@@ -40,6 +44,7 @@ public class GameplayUI : MonoBehaviour
     {
         if (isVisible)
         {
+            questionText.text = "";
             ScaleAnimation(restartButton.transform, .25f);
         }
         restartButton.SetActive(isVisible);

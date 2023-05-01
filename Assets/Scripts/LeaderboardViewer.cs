@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,15 +7,14 @@ public class LeaderboardViewer : MonoBehaviour
 {
     public ScrollRect scrollRect;
     public Leaderboard leaderboard;
-    public RectTransform Container;
-    public Mask Mask;
-    public RectTransform Prefab;
-    public int lengt = 10;
-    public float Spacing;
+    public RectTransform container;
+    public Mask mask;
+    public RectTransform leaderboardItemUIPrefab;
+    private int lengt = 10;
+    public float spacing;
 
     private RectTransform maskRT;
     private int numVisible;
-    private int numBuffer = 2;
     private float containerHalfSize;
     private float prefabSize;
 
@@ -22,7 +22,7 @@ public class LeaderboardViewer : MonoBehaviour
     private List<RectTransform> listItemRect = new List<RectTransform>();
     private List<LeaderboardItemUI> listItems = new List<LeaderboardItemUI>();
     private int numItems = 0;
-    private Vector3 startPos;
+    private Vector3 startingPosition;
 
     private void Awake()
     {
@@ -31,6 +31,7 @@ public class LeaderboardViewer : MonoBehaviour
 
     void Start()
     {
+        lengt = 10;
         if (leaderboard.GetCurrentPage() == null)
         {
             leaderboard.GetPage(GenerateLeaderboardUIElements);
@@ -41,25 +42,25 @@ public class LeaderboardViewer : MonoBehaviour
 
     private void GenerateLeaderboardUIElements()
     {
-        Container.anchoredPosition3D = new Vector3(0, 0, 0);
+        container.anchoredPosition3D = new Vector3(0, 0, 0);
 
-        maskRT = Mask.GetComponent<RectTransform>();
+        maskRT = mask.GetComponent<RectTransform>();
 
-        Vector2 prefabScale = Prefab.rect.size;
-        prefabSize = (prefabScale.y) + Spacing;
+        Vector2 prefabScale = leaderboardItemUIPrefab.rect.size;
+        prefabSize = (prefabScale.y) + spacing;
 
-        Container.sizeDelta = (new Vector2(0, prefabSize * lengt));
-        containerHalfSize = (Container.rect.size.y * 0.5f);
+        container.sizeDelta = (new Vector2(0, prefabSize * lengt));
+        containerHalfSize = (container.rect.size.y * 0.5f);
 
         numVisible = Mathf.CeilToInt((maskRT.rect.size.y) / prefabSize);
 
-        startPos = Container.anchoredPosition3D - (Vector3.down * containerHalfSize) + (Vector3.down * ((prefabScale.y) * 0.5f));
-        numItems = Mathf.Min(lengt, numVisible + numBuffer);
+        startingPosition = container.anchoredPosition3D - (Vector3.down * containerHalfSize) + (Vector3.down * ((prefabScale.y) * 0.5f));
+        numItems = Mathf.Min(lengt, numVisible + 2);
         for (int i = 0; i < numItems; i++)
         {
-            GameObject obj = Instantiate(Prefab.gameObject, Container.transform);
+            GameObject obj = Instantiate(leaderboardItemUIPrefab.gameObject, container.transform);
             RectTransform t = obj.GetComponent<RectTransform>();
-            t.anchoredPosition3D = startPos + (Vector3.down * i * prefabSize);
+            t.anchoredPosition3D = startingPosition + (Vector3.down * i * prefabSize);
             listItemRect.Add(t);
             itemDict.Add(t.GetInstanceID(), new int[] { i, i });
             obj.SetActive(true);
@@ -72,15 +73,15 @@ public class LeaderboardViewer : MonoBehaviour
             Data data = leaderboard.GetCurrentPage().data[i];
             listItems[i].UpdateData(data.nickname, data.rank);
         }
-        Prefab.gameObject.SetActive(false);
-        Container.anchoredPosition3D += Vector3.down * (containerHalfSize - ((maskRT.rect.size.y) * 0.5f));
+        leaderboardItemUIPrefab.gameObject.SetActive(false);
+        container.anchoredPosition3D += Vector3.down * (containerHalfSize - ((maskRT.rect.size.y) * 0.5f));
     }
 
     public void ReorderItemsByPos(float normPos)
     {
         normPos = 1f - normPos;
         int numOutOfView = Mathf.CeilToInt(normPos * (lengt - numVisible));   //number of elements beyond the left boundary (or top)
-        int firstIndex = Mathf.Max(0, numOutOfView - numBuffer);   //index of first element beyond the left boundary (or top)
+        int firstIndex = Mathf.Max(0, numOutOfView - 2);   //index of first element beyond the left boundary (or top)
         int originalIndex = firstIndex % numItems;
 
         int newIndex = firstIndex;
@@ -91,9 +92,11 @@ public class LeaderboardViewer : MonoBehaviour
             {
                 return;
             }
+
             MoveItemByIndex(listItemRect[i], newIndex);
             listItems[i].UpdateData(data.nickname,data.rank);
             newIndex++;
+            UpdateLenght(leaderboard.GetLoadedLeaderboardLenght());
         }
         for (int i = 0; i < originalIndex; i++)
         {
@@ -105,6 +108,7 @@ public class LeaderboardViewer : MonoBehaviour
             MoveItemByIndex(listItemRect[i], newIndex);
             listItems[i].UpdateData(data.nickname,data.rank);
             newIndex++;
+            UpdateLenght(leaderboard.GetLoadedLeaderboardLenght());
         }
     }
 
@@ -112,7 +116,7 @@ public class LeaderboardViewer : MonoBehaviour
     {
         int id = item.GetInstanceID();
         itemDict[id][0] = index;
-        item.anchoredPosition3D = startPos + (Vector3.down * index * prefabSize);
+        item.anchoredPosition3D = startingPosition + (Vector3.down * index * prefabSize);
     }
 
     public void LeaderboardDataLoading(object sender,bool isLoading)
@@ -126,5 +130,28 @@ public class LeaderboardViewer : MonoBehaviour
         {
             scrollRect.vertical = true;
         }
+    }
+    public void UpdateLenght(int newLenght)
+    {
+        if (lengt == newLenght)
+        {
+            return;
+        }
+        float ratio = ((float)lengt) / ((float)newLenght-3);
+        lengt = newLenght;
+        container.anchoredPosition3D = new Vector3(0, 0, 0);
+
+        Vector2 prefabScale = leaderboardItemUIPrefab.rect.size;
+        prefabSize = (prefabScale.y) + spacing;
+
+        container.sizeDelta = (new Vector2(0, prefabSize * lengt));
+        containerHalfSize = (container.rect.size.y * 0.5f);
+
+        numVisible = Mathf.CeilToInt((maskRT.rect.size.y) / prefabSize);
+
+        startingPosition = container.anchoredPosition3D - (Vector3.down * containerHalfSize) + (Vector3.down * ((prefabScale.y) * 0.5f));
+        numItems = Mathf.Min(lengt, numVisible + 2);
+        scrollRect.StopMovement();
+        scrollRect.DOVerticalNormalizedPos(ratio, 0f);
     }
 }

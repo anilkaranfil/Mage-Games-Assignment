@@ -175,7 +175,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -518,11 +518,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scrollRect: {fileID: 1300848619}
   leaderboard: {fileID: 931958099}
-  Container: {fileID: 654326634}
-  Mask: {fileID: 1137660763}
-  Prefab: {fileID: 1361398417}
-  lengt: 20
-  Spacing: 10
+  container: {fileID: 654326634}
+  mask: {fileID: 1137660763}
+  leaderboardItemUIPrefab: {fileID: 1361398417}
+  spacing: 20
 --- !u!1 &673018812
 GameObject:
   m_ObjectHideFlags: 0
@@ -557,7 +556,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0.9999998, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -966,9 +965,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 460a126270153fd408012f3650963f58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  links:
-  - 'https://magegamessite.web.app/case1/leaderboard_page_0.json '
-  - 'https://magegamessite.web.app/case1/leaderboard_page_1.json '
   currentPageIndex: 0
 --- !u!1 &963194225
 GameObject:
@@ -1629,7 +1625,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1859,7 +1855,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 800, y: 400}
+  m_SizeDelta: {x: 700, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1361398418
 MonoBehaviour:
@@ -1988,7 +1984,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -17, y: -17}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1445998811
 MonoBehaviour:
@@ -2093,7 +2089,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -2503,7 +2499,7 @@ MonoBehaviour:
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1080, y: 1920}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 1
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -2600,5 +2596,5 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 800, y: -400}
+  m_SizeDelta: {x: 700, y: -400}
   m_Pivot: {x: 0.5, y: 0.5}
