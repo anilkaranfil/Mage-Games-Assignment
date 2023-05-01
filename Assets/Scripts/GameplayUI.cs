@@ -61,6 +61,10 @@ public class GameplayUI : MonoBehaviour
     {
         SceneLoader.OpenGameplay();
     }
+    public void OpenMenuScene()
+    {
+        SceneLoader.OpenMainMenu();
+    }
     private void ScaleAnimation(Transform animatedTransform,float time)
     {
         DOTween.Kill(animatedTransform.transform);
