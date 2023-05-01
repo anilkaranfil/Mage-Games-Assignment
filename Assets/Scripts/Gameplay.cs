@@ -33,7 +33,6 @@ public class Gameplay : MonoBehaviour
                 CheckAnswer(-1);
                 waitedRoundTime = 0;
                 UpdateScore(-3);
-                Debug.Log("Round Ended");
             }
             gameplayUI.SetTimerText(roundTime - waitedRoundTime);
         }
@@ -42,10 +41,10 @@ public class Gameplay : MonoBehaviour
     {
         if (currentQuestionIndex > questions.questions.Length - 1)
         {
-            Debug.LogError("Finish Game");
             return;
         }
-        gameplayUI.ToggleRoundEnd(false);
+        gameplayUI.ToggleVisualRestartButton(false);
+        gameplayUI.ToggleVisualNextQuestionButton(false);
         QuestionData newQuestionData = questions.questions[currentQuestionIndex];
         gameplayUI.GenerateNewQuestion(newQuestionData);
         StartRound();
@@ -58,7 +57,7 @@ public class Gameplay : MonoBehaviour
     private void EndRound()
     {
         roundStarted = false;
-        gameplayUI.ToggleRoundEnd(true);
+        gameplayUI.ToggleVisualNextQuestionButton(true);
     }
     private void LoadData()
     {
@@ -92,6 +91,7 @@ public class Gameplay : MonoBehaviour
         RoundState roundState = RoundState.Wrong;
         int trueIndex = GetAnswerIndex();
         currentQuestionIndex++;
+        CheckGameplayFinish();
         if (trueIndex == -1)
         {
             return;
@@ -118,6 +118,14 @@ public class Gameplay : MonoBehaviour
     {
         score += point;
         gameplayUI.UpdateScore(score);
+    }
+    private void CheckGameplayFinish()
+    {
+        if (currentQuestionIndex > questions.questions.Length - 1)
+        {
+            gameplayUI.ToggleVisualRestartButton(true);
+            return;
+        }
     }
 }
 public enum RoundState

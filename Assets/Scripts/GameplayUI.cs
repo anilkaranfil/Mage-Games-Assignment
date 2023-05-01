@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -12,6 +13,7 @@ public class GameplayUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI scoreText;
     [Space(10), Header("Round Result")]
     public GameObject nextQuestionButton;
+    public GameObject restartButton;
 
     public void OpenMainMenuScene()
     {
@@ -21,7 +23,6 @@ public class GameplayUI : MonoBehaviour
     {
         questionUI.SetQuestionChoices(questionData);
     }
-
     public void ShowAnswer(int answerIndex, int trueIndex, RoundState roundState)
     {
         questionUI.ShowAnswer(answerIndex, trueIndex, roundState);
@@ -31,13 +32,34 @@ public class GameplayUI : MonoBehaviour
     {
         timeText.text = spendedTime.ToString("F0");
     }
-
-    public void ToggleRoundEnd(bool isVisible)
-    {
-        nextQuestionButton.SetActive(isVisible);
-    }
     public void UpdateScore(float score)
     {
         scoreText.text = score.ToString();
+    }
+    public void ToggleVisualRestartButton(bool isVisible)
+    {
+        if (isVisible)
+        {
+            ScaleAnimation(restartButton.transform, .25f);
+        }
+        restartButton.SetActive(isVisible);
+    }
+    public void ToggleVisualNextQuestionButton(bool isVisible)
+    {
+        if (isVisible)
+        {
+            ScaleAnimation(nextQuestionButton.transform,.25f);
+        }
+        nextQuestionButton.SetActive(isVisible);
+    }
+    public void OpenGameplayScene()
+    {
+        SceneLoader.OpenGameplay();
+    }
+    private void ScaleAnimation(Transform animatedTransform,float time)
+    {
+        DOTween.Kill(animatedTransform.transform);
+        animatedTransform.transform.localScale = Vector3.zero;
+        animatedTransform.transform.DOScale(Vector3.one, time);
     }
 }

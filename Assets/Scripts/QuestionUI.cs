@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,6 +30,10 @@ public class QuestionUI : MonoBehaviour
     {
         for (int i = 0; i < choices.Length; i++)
         {
+            if (interactable)
+            {
+                ScaleAnimation(choices[i].choicesButton.transform, .2f, i * .2f);
+            }
             choices[i].choicesButton.interactable = interactable;
         }
     }
@@ -39,24 +42,35 @@ public class QuestionUI : MonoBehaviour
         ButtonInteraction(false);
         if (roundState == RoundState.Correct)
         {
-            var colors = choices[playerAnswer].choicesButton.colors;
-            colors.disabledColor = correctColor;
-            choices[playerAnswer].choicesButton.colors = colors;
+            ChangeColorButton(choices[playerAnswer].choicesButton,correctColor);
         }
         else if (roundState == RoundState.Wrong)
         {
-            var colors = choices[playerAnswer].choicesButton.colors;
-            colors.disabledColor = wrongColor;
-            choices[playerAnswer].choicesButton.colors = colors;
-            colors.disabledColor = correctColor;
-            choices[trueAnswer].choicesButton.colors = colors;
+            ChangeColorButton(choices[playerAnswer].choicesButton, wrongColor);
+            ChangeColorButton(choices[trueAnswer].choicesButton, correctColor);
         }
         else if (roundState == RoundState.Pass)
         {
-            var colors = choices[trueAnswer].choicesButton.colors;
-            colors.disabledColor = correctColor;
-            choices[trueAnswer].choicesButton.colors = colors;
+            ChangeColorButton(choices[trueAnswer].choicesButton, correctColor);
         }
+    }
+    private void ChangeColorButton(Button button,Color color)
+    {
+        var colors = button.colors;
+        colors.disabledColor = color;
+        button.colors = colors;
+    }
+    private void PunchScaleAnimation(Transform animatedTransform, float time)
+    {
+        DOTween.Kill(animatedTransform.transform);
+        animatedTransform.transform.localScale = Vector3.one;
+        animatedTransform.transform.DOPunchScale(Vector3.one * 1.1f, time);
+    }
+    private void ScaleAnimation(Transform animatedTransform, float time,float delay)
+    {
+        DOTween.Kill(animatedTransform.transform);
+        animatedTransform.transform.localScale = Vector3.zero;
+        animatedTransform.transform.DOScale(Vector3.one, time).SetDelay(delay);
     }
 }
 [System.Serializable]

@@ -4,36 +4,27 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class APILeaderboard : MonoBehaviour
+public class APILeaderboard
 {
-    public Page[] leaderboard;
-    public string[] leaderboardPages;
-    
-    private void Start()
+    public static IEnumerator GetRequest(string url,Action<Page> callback)
     {
-        //test
-        leaderboard = new Page[leaderboardPages.Length];
-        for (int i = 0; i < leaderboardPages.Length; i++)
-        {
-            StartCoroutine(GetRequest(leaderboardPages[i]));
-        }
-    }
-
-    IEnumerator GetRequest(string uri)
-    {
-        using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
         {
             yield return webRequest.SendWebRequest();
 
             switch (webRequest.result)
             {
                 case UnityWebRequest.Result.ConnectionError:
+                    callback(null);
+                    break;
                 case UnityWebRequest.Result.DataProcessingError:
+                    callback(null);
                     Debug.LogError(String.Format("Someting went wrong :{0}", webRequest.error));
                     break;
                 case UnityWebRequest.Result.Success:
+                    Debug.Log("Request Success");
                     Page leaderboard = JsonConvert.DeserializeObject<Page>(webRequest.downloadHandler.text);
-                    this.leaderboard[leaderboard.page] = leaderboard;
+                    callback(leaderboard);
                     break;
             }
         }
